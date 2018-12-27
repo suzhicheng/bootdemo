@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdemo.system.common.log.mapper1.LogMapper">
+
+	<select id="list" resultType="com.bootdemo.system.common.log.entity.LogEntity">
+		SELECT 
+		id,userId,userName,operation,time,method,params,ip,createDate  
+		FROM t_sys_log
+        <where>  
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="userId != null and userId != ''"> and userId = #{userId} </if>
+			<if test="userName != null and userName != ''"> and userName = #{userName} </if>
+			<if test="operation != null and operation != ''"> and operation = #{operation} </if>
+			<if test="time != null and time != ''"> and time = #{time} </if>
+			<if test="method != null and method != ''"> and method = #{method} </if>
+			<if test="params != null and params != ''"> and params = #{params} </if>
+			<if test="ip != null and ip != ''"> and ip = #{ip} </if>
+			<if test="createDate != null and createDate != ''"> and createDate = #{createDate} </if>
+  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                ORDER BY ${sort} ${order}
+            </when>
+			<otherwise>
+                ORDER BY id DESC
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM t_sys_log
+		 <where>  
+			<if test="id != null and id != ''"> AND id = #{id} </if>
+			<if test="userId != null and userId != ''"> AND userId = #{userId} </if>
+			<if test="userName != null and userName != ''"> AND userName = #{userName} </if>
+			<if test="operation != null and operation != ''"> AND operation = #{operation} </if>
+			<if test="time != null and time != ''"> AND time = #{time} </if>
+			<if test="method != null and method != ''"> AND method = #{method} </if>
+			<if test="params != null and params != ''"> AND params = #{params} </if>
+			<if test="ip != null and ip != ''"> AND ip = #{ip} </if>
+			<if test="createDate != null and createDate != ''"> AND createDate = #{createDate} </if>
+  		</where>
+	</select>
+	 
+	<delete id="removeByUserId">
+	DELETE FROM t_sys_log WHERE userId = #{value}
+	</delete>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdemo.system.system.user.mapper1.UserMapper">
+
+	<select id="list" resultType="com.bootdemo.system.system.user.entity.UserEntity">
+		SELECT 
+		id,userName,phone,name,password,email,status,createUser,
+		createDate,updateDate,sex,birth,picId,liveAddress,hobby,province,city,district,indexUserType
+		lastLoginIp,lastLoginDate 
+		FROM t_user
+        <where>  
+  		  <if test="userName != null and userName != ''"> AND userName = #{userName} </if>
+  		  <if test="phone != null and phone != ''"> AND phone LIKE '%${phone}%' </if>
+  		  <if test="name != null and name != ''"> AND name = #{name} </if>
+  		  <if test="status != null and status != ''"> AND status = #{status} </if>
+  		  <if test="email != null and email != ''"> AND email = #{email} </if>
+  		  <if test="sex != null and sex != ''"> AND sex = #{sex} </if>
+  		  <if test="province != null and province != ''"> AND province = #{province} </if>
+  		  <if test="city != null and city != ''"> AND city = #{city} </if>
+  		  <if test="district != null and district != ''"> AND district = #{district} </if>
+  		  <if test="indexUserType != null and indexUserType != ''"> AND indexUserType = #{indexUserType} </if>
+  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                ORDER BY ${sort} ${order}
+            </when>
+			<otherwise>
+                ORDER BY createDate DESC
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM t_user
+		<where>  
+			<if test="userName != null and userName != ''"> AND userName = #{userName} </if>
+			<if test="phone != null and phone != ''"> AND phone LIKE '%${phone}%' </if>
+			<if test="name != null and name != ''"> AND name = #{name} </if>
+			<if test="status != null and status != ''"> AND status = #{status} </if>
+			<if test="email != null and email != ''"> AND email = #{email} </if>
+			<if test="sex != null and sex != ''"> AND sex = #{sex} </if>
+			<if test="province != null and province != ''"> AND province = #{province} </if>
+			<if test="city != null and city != ''"> AND city = #{city} </if>
+			<if test="district != null and district != ''"> AND district = #{district} </if>
+			<if test="indexUserType != null and indexUserType != ''"> AND indexUserType = #{indexUserType} </if>
+  		</where>
+	</select>
+	 
+	<select id="listByPhone" resultType="com.bootdemo.system.system.user.entity.UserEntity">
+		SELECT 
+		id,phone 
+		FROM t_user 
+		WHERE phone LIKE '%${phone}%'
+	</select>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdemo.system.system.menu.mapper1.MenuMapper">
+
+	<select id="list" resultType="com.bootdemo.system.system.menu.entity.MenuEntity">
+		SELECT
+		id,parentId,name,url,perms,type,icon,sortBy,createDate,updateDate 
+		FROM t_sys_menu
+		<where>
+			<if test="parentId != null and parentId != ''"> AND parentId = #{parentId} </if>
+			<if test="name != null and name != ''"> AND name = #{name} </if>
+			<if test="url != null and url != ''"> AND url = #{url} </if>
+			<if test="perms != null and perms != ''"> AND perms = #{perms} </if>
+			<if test="type != null and type != ''"> AND type = #{type} </if>
+			<if test="icon != null and icon != ''"> AND icon = #{icon} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				ORDER BY ${sort} ${order}
+			</when>
+			<otherwise>
+				ORDER BY createDate DESC
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT COUNT(*) FROm t_sys_menu
+		<where>
+			<if test="parentId != null and parentId != ''"> AND parentId = #{parentId} </if>
+			<if test="name != null and name != ''"> AND name = #{name} </if>
+			<if test="url != null and url != ''"> AND url = #{url} </if>
+			<if test="perms != null and perms != ''"> AND perms = #{perms} </if>
+			<if test="type != null and type != ''"> AND type = #{type} </if>
+			<if test="icon != null and icon != ''"> AND icon = #{icon} </if>
+		</where>
+	</select>
+
+	<select id="listMenuByUserId" resultType="com.bootdemo.system.system.menu.entity.MenuEntity">
+		SELECT DISTINCT
+		m.id , m.parentId, m.name, m.url,
+		m.perms,m.type,m.icon,m.sortBy,m.createDate,m.updateDate
+		FROM t_sys_menu m
+		LEFT JOIN t_sys_role_menu rm ON m.id = rm.menuId 
+		LEFT JOIN t_sys_user_role ur ON rm.roleId =ur.roleId 
+		WHERE ur.userId = #{id}
+		AND m.type IN(0,1)
+		ORDER BY m.sortBy
+	</select>
+
+	<select id="listUserPerms" resultType="string">
+		SELECT DISTINCT m.perms
+		FROM t_sys_menu m 
+		LEFT JOIN t_sys_role_menu rm ON m.id = rm.menuId
+		LEFT JOIN t_sys_user_role ur on rm.roleId = ur.roleId 
+		WHERE ur.userId = #{id}
+	</select>
+</mapper>

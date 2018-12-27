@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdemo.system.system.roleMenu.mapper1.RoleMenuMapper">
+
+
+	<select id="list" resultType="com.bootdemo.system.system.roleMenu.entity.RoleMenuEntity">
+		SELECT 
+		id,roleId,menuId 
+		FROM t_sys_role_menu
+		<where>
+			<if test="id != null and id != ''"> AND id = #{id} </if>
+			<if test="roleId != null and roleId != ''"> AND roleId = #{roleId} </if>
+			<if test="menuId != null and menuId != ''"> AND menuId = #{menuId} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				ORDER BY ${sort} ${order}
+			</when>
+			<otherwise>
+				ORDER BY createDate DESC
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM t_sys_role_menu
+		<where>
+			<if test="id != null and id != ''"> AND id = #{id} </if>
+			<if test="roleId != null and roleId != ''"> AND roleId = #{roleId} </if>
+			<if test="menuId != null and menuId != ''"> AND menuId = #{menuId} </if>
+		</where>
+	</select>
+
+	<select id="listMenuIdByRoleId" resultType="String">
+		SELECT menuId FROM t_sys_role_menu
+		<where>roleId = #{roleId}</where>
+	</select>
+
+	<delete id="removeByRoleId">
+		DELETE FROM t_sys_role_menu WHERE roleId=#{roleId}
+	</delete>
+
+	<delete id="removeByMenuId">
+		DELETE FROM t_sys_role_menu WHERE menuId=#{menuId}
+	</delete>
+
+	<insert id="batchSave">
+		INSERT INTO t_sys_role_menu(id,roleId, menuId,createDate) values
+		<foreach item="item" index="index" collection="list"
+			separator=",">
+			(#{item.id},#{item.roleId},#{item.menuId},#{item.createDate})
+		</foreach>
+	</insert>
+</mapper>

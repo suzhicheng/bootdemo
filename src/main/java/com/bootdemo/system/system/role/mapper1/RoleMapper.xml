@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdemo.system.system.role.mapper1.RoleMapper">
+
+	<select id="list" resultType="com.bootdemo.system.system.role.entity.RoleEntity">
+		SELECT
+		id,roleName,roleSign,remark,createUser,createDate,updateDate 
+		FROM t_sys_role
+		<where>
+			<if test="roleName != null and roleName != ''"> AND roleName = #{roleName} </if>
+			<if test="roleSign != null and roleSign != ''"> AND roleSign = #{roleSign} </if>
+			<if test="remark != null and remark != ''"> AND remark = #{remark} </if>
+			<if test="createUser != null and createUser != ''"> AND createUser = #{createUser} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				ORDER BY ${sort} ${order}
+			</when>
+			<otherwise>
+				ORDER BY createDate DESC
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			LIMIT #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM t_sys_role
+		<where>
+			<if test="roleName != null and roleName != ''"> AND roleName = #{roleName} </if>
+			<if test="roleSign != null and roleSign != ''"> AND roleSign = #{roleSign} </if>
+			<if test="remark != null and remark != ''"> AND remark = #{remark} </if>
+			<if test="createUser != null and createUser != ''"> AND createUser = #{createUser} </if>
+		</where>
+	</select>
+
+</mapper>
